@@ -1,6 +1,10 @@
+from http.client import HTTPException
 from flask import Flask
 from app.db import db
 import os
+from app.utils.request import generate_response
+from app.routes import auth_route
+from marshmallow import ValidationError
 
 def create_app():
     app = Flask(__name__)
@@ -12,13 +16,26 @@ def create_app():
 
     db.init_app(app)
 
+    app.register_blueprint(auth_route, url_prefix='/auth')
+
     return app
 
 app = create_app()
+
+@app.errorhandler(ValidationError)
+def handle_validation_error(e):
+    return generate_response(message=e.messages, status=400, error="Validation Error")
+
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = 500
+    if isinstance(e, HTTPException):
+        code = e.code
+    return generate_response(status=code)
 
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
