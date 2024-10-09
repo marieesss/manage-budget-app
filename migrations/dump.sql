@@ -1,44 +1,51 @@
 CREATE TABLE "categorie"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL  NOT NULL,
     "budget_id" BIGINT NULL,
     "type" VARCHAR(255) CHECK
         ("type" IN('expense', 'income')) NOT NULL DEFAULT 'expense',
-        "name" CHAR(255) NOT NULL
+        "name" CHAR(255) NOT NULL,
+        "created_at" DATE NOT NULL, 
+    "updated_at" DATE
 );
 ALTER TABLE
     "categorie" ADD PRIMARY KEY("id");
 CREATE TABLE "transaction"(
-    "transaction_id" BIGINT NOT NULL,
+    "id" SERIAL  NOT NULL,
     "budget_id" BIGINT NOT NULL,
     "categorie_id" BIGINT NOT NULL,
     "amount" DECIMAL(10, 2) NOT NULL,
     "transaction_date" DATE NOT NULL,
     "type" VARCHAR(255) CHECK
-        ("type" IN('expense', 'income')) NOT NULL
+        ("type" IN('expense', 'income')) NOT NULL,
+    "created_at" DATE NOT NULL, 
+    "updated_at" DATE
 );
 ALTER TABLE
-    "transaction" ADD PRIMARY KEY("transaction_id");
+    "transaction" ADD PRIMARY KEY("id");
 CREATE TABLE "Budget"(
-    "id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
     "user_id" BIGINT NOT NULL,
-    "name" VARCHAR(255) NOT NULL
+    "name" VARCHAR(255) NOT NULL,
+    "created_at" DATE NOT NULL, 
+    "updated_at" DATE
 );
 ALTER TABLE
     "Budget" ADD PRIMARY KEY("id");
 CREATE TABLE "user"(
-    "user_id" BIGINT NOT NULL,
+    "id" SERIAL NOT NULL,
     "firstname" CHAR(255) NOT NULL,
     "lastname" CHAR(255) NOT NULL,
     "email" CHAR(255) NOT NULL,
     "password" CHAR(255) NOT NULL,
-    "creation_date" DATE NOT NULL
+    "created_at" DATE NOT NULL, 
+    "updated_at" DATE
 );
 ALTER TABLE
-    "user" ADD PRIMARY KEY("user_id");
+    "user" ADD PRIMARY KEY("id");
 ALTER TABLE
     "user" ADD CONSTRAINT "user_email_unique" UNIQUE("email");
 ALTER TABLE
-    "Budget" ADD CONSTRAINT "budget_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "user"("user_id");
+    "Budget" ADD CONSTRAINT "budget_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "user"("id");
 ALTER TABLE
     "transaction" ADD CONSTRAINT "transaction_categorie_id_foreign" FOREIGN KEY("categorie_id") REFERENCES "categorie"("id");
 ALTER TABLE
@@ -50,13 +57,13 @@ ALTER TABLE
 -- Insérer des catégories dans la table "categorie"
 
 -- Catégorie pour les dépenses
-INSERT INTO categorie (id,type, name)
-VALUES (1,'expense', 'Food'),
-       (2, 'expense', 'Transportation'),
-       (3, 'expense', 'Rent'),
-       (5,'expense', 'Utilities');
+INSERT INTO categorie (id,type, name, created_at)
+VALUES (1,'expense', 'Food', '1922-02-02'),
+       (2, 'expense', 'Transportation', '1922-02-02'),
+       (3, 'expense', 'Rent', '1922-02-02'),
+       (5,'expense', 'Utilities', '1922-02-02');
 
 -- Catégorie pour les revenus
-INSERT INTO categorie (id, type, name)
-VALUES (6, 'income', 'Salary'),
-       (7, 'income', 'Freelance Income');
+INSERT INTO categorie (id, type, name, created_at)
+VALUES (6, 'income', 'Salary', '1922-02-02'),
+       (7, 'income', 'Freelance Income', '1922-02-02');

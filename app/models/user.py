@@ -1,16 +1,16 @@
-from db.connect import db
+from app.db import db
 from sqlalchemy.ext.hybrid import hybrid_property
-from utils.hash import hash_password, verify_password
+from app.utils.hash import hash_password, verify_password
+from .base import BaseTable
 
 
-class User(db.Model):
+class User(BaseTable):
     __tablename__ = "user"
-    user_id = db.Column(db.Integer, primary_key=True, )
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(128), unique=True, nullable=False)
     firstname = db.Column(db.String(128), nullable=False)
     lastname = db.Column(db.String(128),nullable=False)
     _password = db.Column("password",db.String(128),nullable=False)
-    created_at = db.Column(db.DateTime, default=db.datetime.now)
 
 
     #
