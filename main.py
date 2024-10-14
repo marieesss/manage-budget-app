@@ -1,3 +1,4 @@
+from datetime import timedelta
 from http.client import HTTPException
 from flask import Flask
 from app.db import db
@@ -17,6 +18,11 @@ def create_app():
     db.init_app(app)
 
     app.register_blueprint(auth_route, url_prefix='/auth')
+    app.config['SECRET_KEY'] = 'your_strong_secret_key'
+    app.config["JWT_SECRET_KEY"] = 'your_jwt_secret_key'
+    app.config['JWT_TOKEN_LOCATION'] = ['headers']
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+
 
     return app
 
