@@ -3,7 +3,7 @@ CREATE TABLE "categorie"(
     "budget_id" BIGINT NULL,
     "type" VARCHAR(255) CHECK
         ("type" IN('expense', 'income')) NOT NULL DEFAULT 'expense',
-        "name" CHAR(255) NOT NULL,
+        "name" VARCHAR(255) NOT NULL,
         "created_at" DATE NOT NULL, 
     "updated_at" DATE
 );
@@ -33,10 +33,10 @@ ALTER TABLE
     "Budget" ADD PRIMARY KEY("id");
 CREATE TABLE "user"(
     "id" SERIAL NOT NULL,
-    "firstname" CHAR(255) NOT NULL,
-    "lastname" CHAR(255) NOT NULL,
-    "email" CHAR(255) NOT NULL,
-    "password" CHAR(255) NOT NULL,
+    "firstname" VARCHAR(255) NULL,
+    "lastname" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
     "created_at" DATE NOT NULL, 
     "updated_at" DATE
 );
