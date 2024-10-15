@@ -6,6 +6,8 @@ import os
 from app.utils.request import generate_response
 from app.routes import auth_route
 from marshmallow import ValidationError
+from flask_jwt_extended import JWTManager
+
 
 def create_app():
     app = Flask(__name__)
@@ -21,12 +23,14 @@ def create_app():
     app.config['SECRET_KEY'] = 'your_strong_secret_key'
     app.config["JWT_SECRET_KEY"] = 'your_jwt_secret_key'
     app.config['JWT_TOKEN_LOCATION'] = ['headers']
-    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=1)
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=2)
 
 
     return app
 
 app = create_app()
+
+jwt = JWTManager(app)
 
 @app.errorhandler(ValidationError)
 def handle_validation_error(e):

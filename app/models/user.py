@@ -23,6 +23,11 @@ class User(BaseTable):
         self._password = hash_password(password=password)
 
     def authenticate(self, password_to_check):
-        return verify_password(password=self._password, password_to_check=password_to_check)
+        res = verify_password(self._password, password_to_check)
+        return res
+
+    @classmethod
+    def get_user_by_mail(self, email):
+        return self.query.filter_by(email=email).first()    
 
         

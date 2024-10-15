@@ -1,7 +1,8 @@
 from flask import Blueprint
-from app.schemas import auth_schema
+from app.schemas import auth_schema, login_schema
 from app.services.user import UserService
 from app.utils.request import get_json_data, generate_response, validate_json_schema
+from app.utils.jwt import create_jwt
 
 auth_route = Blueprint('authentification route', __name__)
 
@@ -30,3 +31,21 @@ def register():
             return generate_response(message="User created", status=201)
         except Exception as e:
              return generate_response(message="An error occurred", status=500, error="Internal Server Error")
+        
+
+@auth_route.route('/login', methods=(['POST']))
+def login():
+    json_data, error = get_json_data()
+
+    if error:
+        return generate_response(message="Bad request", error=error, status=400)
+    
+    result = validate_json_schema(json_data=json_data, schema=login_schema)
+    try:
+        user  = UserService.verify_user_login(email=result["email"], password=result["password"])
+        if user:
+            token = create_jwt(data=result["email"])
+            return generate_response(message="Login successful", status=200, data={"token": token})
+    except Exception as e:
+        return generate_response(message="An error occurred during login", status=500, error=str(e))
+

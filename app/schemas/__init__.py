@@ -1,1 +1,1 @@
-from .user import auth_schema
+from .user import auth_schema, login_schema
