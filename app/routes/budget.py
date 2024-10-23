@@ -1,7 +1,7 @@
 from flask import Blueprint
 from app.schemas import create_budget_payload
 from app.utils.request import get_json_data, generate_response, validate_json_schema
-from app.utils.decorators import user_required
+from app.utils.decorators import user_required, admin_required
 from flask_jwt_extended import get_jwt
 from app.services.budget import BudgetService
 import logging

@@ -1,5 +1,6 @@
 from datetime import timedelta
 from http.client import HTTPException
+import sys
 from flask import Flask
 from app.db import db
 import os
@@ -8,20 +9,17 @@ from app.routes import auth_route, budget_route
 from marshmallow import ValidationError
 from flask_jwt_extended import JWTManager
 from flask import Flask
+import sys
 import logging
 
-logging.basicConfig(filename='record.log',
-                level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 def create_app():
     app = Flask(__name__)
-
-    console_handler = logging.StreamHandler()  
-    console_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    console_handler.setFormatter(formatter)
-    app.logger.addHandler(console_handler)
+    root = logging.getLogger()
+    handler = logging.StreamHandler(sys.stdout)
+    root.addHandler(handler)
 
     app.config["SQLALCHEMY_DATABASE_URI"] = (
         f"postgresql://{os.getenv('POSTGRES_USER')}:"
@@ -56,7 +54,7 @@ def handle_error(e):
     code = 500
     if isinstance(e, HTTPException):
         code = e.code
-    return generate_response(status=code)
+    return generate_response(status=code, message="oups")
 
 @app.route('/')
 def hello_world():
