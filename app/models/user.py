@@ -11,7 +11,9 @@ class User(BaseTable):
     firstname = db.Column(db.String(128), nullable=False)
     lastname = db.Column(db.String(128),nullable=False)
     _password = db.Column("password",db.String(128),nullable=False)
-    budget = db.relationship('Budget', backref='user')
+
+
+    budgets = db.relationship("Budget", back_populates="user") 
 
     #
     @hybrid_property
@@ -28,6 +30,9 @@ class User(BaseTable):
 
     @classmethod
     def get_user_by_mail(self, email):
-        return self.query.filter_by(email=email).first()    
+        return self.query.filter_by(email=email).first() 
+
+    def get_budgets(self):
+        return self.budgets
 
         
