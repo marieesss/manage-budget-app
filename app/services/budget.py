@@ -2,8 +2,6 @@ from app.models.user import User
 from app.db import db
 from app.models.budget import Budget
 from app.utils.request import generate_response
-import logging
-
 
 
 class BudgetService:
@@ -60,6 +58,31 @@ class BudgetService:
                 for budget in budgets:
                     budget_data.append({"id": budget.id, "name": budget.name, "created_at": budget.created_at})
                 return budget_data
+        except Exception as error:
+            print(error)
+            raise error
+        
+    def get_budget_by_id(budget_id: int, email : str):
+        """ Get a budget
+
+        Parameters
+        -----------------
+        token : token provided by user
+
+        Returns
+        ----------
+        Array : 
+            id
+            name
+            created_at
+        """
+        try:
+            budget = Budget.get_budget_id(id=budget_id)
+            if not budget: 
+                return generate_response(message="Budget not found", status=400, error="Conflict")
+            elif not budget.user.email == email:
+                return generate_response(message="This is not your budget", status=401, error="Conflict")
+            return {"budget" : budget.name }
         except Exception as error:
             print(error)
             raise error
