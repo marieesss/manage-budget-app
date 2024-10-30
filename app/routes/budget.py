@@ -43,7 +43,7 @@ def get_budgets():
 
         res = BudgetService.get_user_budgets(email=claims["sub"])
 
-        return generate_response(message=res, status=200)
+        return generate_response(data=res, status=200)
 
     except Exception as e:
         return generate_response(message="An error occurred", status=500, error=e)
@@ -56,7 +56,7 @@ def get_budget_by_id(budget_id):
         claims = get_jwt()
         res = BudgetService.get_budget_by_id(budget_id=budget_id, email=claims["sub"])
 
-        return generate_response(message=res, status=200)
+        return generate_response(data=res, status=200)
 
     except Exception as e:
         return generate_response(message="An error occurred", status=500, error=e)
