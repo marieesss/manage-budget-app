@@ -12,5 +12,4 @@ class Transaction(BaseTable):
     amount = db.Column(db.DECIMAL(10,2), nullable=False)
     transaction_date = db.Column(db.DateTime, default=datetime.now,  nullable=False)
     type = db.Column(db.Enum(TypeEnum), default=TypeEnum.expense,  nullable=False)
-
-    categorie = db.relationship("Categorie", back_populates="transactions") 
+    categorie = db.relationship("Categorie", backref="transaction")

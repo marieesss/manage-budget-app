@@ -8,9 +8,7 @@ class Budget(BaseTable):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(128), db.ForeignKey('user.id'), nullable=False)
     name = db.Column(db.String(128), nullable=False)
-
-
-    user = db.relationship("User", back_populates="budgets")
+    transactions = db.relationship("Transaction", backref="budget")
 
 
     @classmethod    

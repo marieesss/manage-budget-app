@@ -11,9 +11,7 @@ class User(BaseTable):
     firstname = db.Column(db.String(128), nullable=False)
     lastname = db.Column(db.String(128),nullable=False)
     _password = db.Column("password",db.String(128),nullable=False)
-
-
-    budgets = db.relationship("Budget", back_populates="user") 
+    budgets = db.relationship("Budget", backref="user") 
 
     #
     @hybrid_property
