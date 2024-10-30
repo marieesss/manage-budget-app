@@ -11,7 +11,6 @@ class Budget(BaseTable):
 
 
     user = db.relationship("User", back_populates="budgets")
-    transactions = db.relationship("Transaction", back_populates="budgets") 
 
 
     @classmethod    
