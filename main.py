@@ -1,11 +1,12 @@
 from datetime import timedelta
 from http.client import HTTPException
+from sqlite3 import IntegrityError
 import sys
 from flask import Flask
 from app.db import db
 import os
 from app.utils.request import generate_response
-from app.routes import auth_route, budget_route, transaction_route
+from app.routes import auth_route, budget_route, transaction_route, categorie_route
 from marshmallow import ValidationError
 from flask_jwt_extended import JWTManager
 from flask import Flask
@@ -35,8 +36,10 @@ def create_app():
 
     app.register_blueprint(transaction_route, url_prefix='/transaction')
 
-    app.config['SECRET_KEY'] = 'your_strong_secret_key'
-    app.config["JWT_SECRET_KEY"] = 'your_jwt_secret_key'
+    app.register_blueprint(categorie_route, url_prefix='/categorie')
+
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['headers']
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=2)
 
@@ -57,6 +60,11 @@ def handle_error(e):
     if isinstance(e, HTTPException):
         code = e.code
     return generate_response(status=code, message="oups")
+
+@app.errorhandler(IntegrityError)
+def handle_integrity_error(e):
+    return generate_response(status=str(e.orig), message="oups")
+
 
 @app.route('/')
 def hello_world():

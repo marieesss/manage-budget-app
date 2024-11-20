@@ -8,6 +8,8 @@ CREATE TABLE "categorie"(
 );
 ALTER TABLE
     "categorie" ADD PRIMARY KEY("id");
+ALTER TABLE "categorie"
+ADD CONSTRAINT "categorie_type_name_unique" UNIQUE ("type", "name");
 CREATE TABLE "transaction"(
     "id" SERIAL  NOT NULL,
     "budget_id" BIGINT NOT NULL,
@@ -50,17 +52,14 @@ ALTER TABLE
 ALTER TABLE
     "transaction" ADD CONSTRAINT "transaction_budget_id_foreign" FOREIGN KEY("budget_id") REFERENCES "budget"("id");
 
-
--- Insérer des catégories dans la table "categorie"
-
--- Catégorie pour les dépenses
-INSERT INTO categorie (id,type, name, created_at)
-VALUES (1,'expense', 'Food', '1922-02-02'),
-       (2, 'expense', 'Transportation', '1922-02-02'),
-       (3, 'expense', 'Rent', '1922-02-02'),
-       (5,'expense', 'Utilities', '1922-02-02');
-
--- Catégorie pour les revenus
-INSERT INTO categorie (id, type, name, created_at)
-VALUES (6, 'income', 'Salary', '1922-02-02'),
-       (7, 'income', 'Freelance Income', '1922-02-02');
+CREATE TABLE "budget_objective" (
+    "id" SERIAL NOT NULL,
+    "budget_id" BIGINT NOT NULL,
+    "categorie_id" BIGINT NOT NULL,
+    "amount" DECIMAL(5, 2) NOT NULL,
+    "created_at" DATE NOT NULL,
+    "updated_at" DATE,
+    PRIMARY KEY ("id"),
+    FOREIGN KEY ("budget_id") REFERENCES "budget"("id"),
+    FOREIGN KEY ("categorie_id") REFERENCES "categorie"("id")
+);
