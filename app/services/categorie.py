@@ -23,10 +23,10 @@ class CategorieService:
             try: 
                 db.session.add(categorie)
                 db.session.commit()
-                return generate_response(message="Categorie created", status=400, error="Conflict")   
+                return generate_response(message="Categorie created", status=200,)   
             except IntegrityError:
                 db.session.rollback()
-                return generate_response(message="Categorie already exists", status=200)   
+                return generate_response(message="Categorie already exists", status=400)   
         except Exception as error:
             db.session.rollback()
             return generate_response(message="An unexpected error occurred", status=500, error=str(error))

@@ -59,7 +59,7 @@ def handle_error(e):
     code = 500
     if isinstance(e, HTTPException):
         code = e.code
-    return generate_response(status=code, message="oups")
+    return generate_response(status=code, message=str(e))
 
 @app.errorhandler(IntegrityError)
 def handle_integrity_error(e):
