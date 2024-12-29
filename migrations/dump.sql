@@ -16,6 +16,7 @@ CREATE TABLE "transaction"(
     "categorie_id" BIGINT,
     "amount" DECIMAL(10, 2) NOT NULL,
     "transaction_date" DATE NOT NULL,
+    "comment" VARCHAR(255),
     "type" VARCHAR(255) CHECK
         ("type" IN('expense', 'income')) NOT NULL,
     "created_at" DATE NOT NULL, 

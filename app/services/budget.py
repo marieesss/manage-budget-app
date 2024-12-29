@@ -82,7 +82,7 @@ class BudgetService:
                 return generate_response(message="Budget not found", status=400, error="Conflict")
             elif not budget.user.email == email:
                 return generate_response(message="This is not your budget", status=401, error="Conflict")
-            return {"budget" : budget.name }
+            return generate_response(data={"id": budget.id , "name" : budget.name, "created_at": budget.created_at }, status=200)   
         except Exception as error:
             print(error)
             raise error

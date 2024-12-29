@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from marshmallow import ValidationError
 
 def get_json_data():
@@ -22,5 +22,5 @@ def validate_json_schema(schema, json_data):
     try:
         return schema().load(json_data)
     except ValidationError as err:
-        raise ValidationError(err.messages)
+        return ValidationError(err.messages)
 
