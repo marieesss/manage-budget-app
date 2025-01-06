@@ -1,6 +1,5 @@
 CREATE TABLE "categorie"(
     "id" SERIAL  NOT NULL,
-    "budget_id" BIGINT NULL,
     "type" VARCHAR(255) CHECK
         ("type" IN('expense', 'income')) NOT NULL DEFAULT 'expense',
         "name" VARCHAR(255) NOT NULL,
@@ -9,12 +8,15 @@ CREATE TABLE "categorie"(
 );
 ALTER TABLE
     "categorie" ADD PRIMARY KEY("id");
+ALTER TABLE "categorie"
+ADD CONSTRAINT "categorie_type_name_unique" UNIQUE ("type", "name");
 CREATE TABLE "transaction"(
     "id" SERIAL  NOT NULL,
     "budget_id" BIGINT NOT NULL,
-    "categorie_id" BIGINT NOT NULL,
+    "categorie_id" BIGINT,
     "amount" DECIMAL(10, 2) NOT NULL,
     "transaction_date" DATE NOT NULL,
+    "comment" VARCHAR(255),
     "type" VARCHAR(255) CHECK
         ("type" IN('expense', 'income')) NOT NULL,
     "created_at" DATE NOT NULL, 
@@ -22,7 +24,7 @@ CREATE TABLE "transaction"(
 );
 ALTER TABLE
     "transaction" ADD PRIMARY KEY("id");
-CREATE TABLE "Budget"(
+CREATE TABLE "budget"(
     "id" SERIAL NOT NULL,
     "user_id" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
@@ -30,7 +32,7 @@ CREATE TABLE "Budget"(
     "updated_at" DATE
 );
 ALTER TABLE
-    "Budget" ADD PRIMARY KEY("id");
+    "budget" ADD PRIMARY KEY("id");
 CREATE TABLE "user"(
     "id" SERIAL NOT NULL,
     "firstname" VARCHAR(255) NULL,
@@ -45,25 +47,29 @@ ALTER TABLE
 ALTER TABLE
     "user" ADD CONSTRAINT "user_email_unique" UNIQUE("email");
 ALTER TABLE
-    "Budget" ADD CONSTRAINT "budget_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "user"("id");
+    "budget" ADD CONSTRAINT "budget_user_id_foreign" FOREIGN KEY("user_id") REFERENCES "user"("id");
 ALTER TABLE
     "transaction" ADD CONSTRAINT "transaction_categorie_id_foreign" FOREIGN KEY("categorie_id") REFERENCES "categorie"("id");
 ALTER TABLE
-    "categorie" ADD CONSTRAINT "categorie_budget_id_foreign" FOREIGN KEY("budget_id") REFERENCES "Budget"("id");
-ALTER TABLE
-    "transaction" ADD CONSTRAINT "transaction_budget_id_foreign" FOREIGN KEY("budget_id") REFERENCES "Budget"("id");
+    "transaction" ADD CONSTRAINT "transaction_budget_id_foreign" FOREIGN KEY("budget_id") REFERENCES "budget"("id");
+
+CREATE TABLE "budget_objective" (
+    "id" SERIAL NOT NULL,
+    "budget_id" BIGINT NOT NULL,
+    "categorie_id" BIGINT NOT NULL,
+    "amount" DECIMAL(5, 2) NOT NULL,
+    "created_at" DATE NOT NULL,
+    "updated_at" DATE,
+    PRIMARY KEY ("id"),
+    FOREIGN KEY ("budget_id") REFERENCES "budget"("id"),
+    FOREIGN KEY ("categorie_id") REFERENCES "categorie"("id")
+);
 
 
--- Insérer des catégories dans la table "categorie"
-
--- Catégorie pour les dépenses
-INSERT INTO categorie (id,type, name, created_at)
-VALUES (1,'expense', 'Food', '1922-02-02'),
-       (2, 'expense', 'Transportation', '1922-02-02'),
-       (3, 'expense', 'Rent', '1922-02-02'),
-       (5,'expense', 'Utilities', '1922-02-02');
-
--- Catégorie pour les revenus
-INSERT INTO categorie (id, type, name, created_at)
-VALUES (6, 'income', 'Salary', '1922-02-02'),
-       (7, 'income', 'Freelance Income', '1922-02-02');
+INSERT INTO "categorie" ("type", "name", "created_at") VALUES
+('expense', 'Food', '2024-12-29'),
+('expense', 'Transport', '2024-12-29'),
+('expense', 'Entertainment', '2024-12-29'),
+('income', 'Salary', '2024-12-29'),
+('income', 'Investments', '2024-12-29')
+ON CONFLICT ("type", "name") DO NOTHING;

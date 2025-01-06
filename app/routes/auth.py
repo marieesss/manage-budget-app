@@ -2,7 +2,6 @@ from flask import Blueprint
 from app.schemas import auth_schema, login_schema
 from app.services.user import UserService
 from app.utils.request import get_json_data, generate_response, validate_json_schema
-from app.utils.jwt import create_jwt
 
 auth_route = Blueprint('authentification route', __name__)
 

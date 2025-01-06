@@ -1,16 +1,27 @@
 from datetime import timedelta
 from http.client import HTTPException
+from sqlite3 import IntegrityError
+import sys
 from flask import Flask
 from app.db import db
 import os
 from app.utils.request import generate_response
-from app.routes import auth_route
+from app.routes import auth_route, budget_route, transaction_route, categorie_route
 from marshmallow import ValidationError
 from flask_jwt_extended import JWTManager
+from flask import Flask
+import sys
+import logging
+
+logging.getLogger().setLevel(logging.DEBUG)
 
 
 def create_app():
     app = Flask(__name__)
+    root = logging.getLogger()
+    handler = logging.StreamHandler(sys.stdout)
+    root.addHandler(handler)
+
     app.config["SQLALCHEMY_DATABASE_URI"] = (
         f"postgresql://{os.getenv('POSTGRES_USER')}:"
         f"{os.getenv('POSTGRES_PASSWORD')}@db:5432/{os.getenv('POSTGRES_DB')}"
@@ -20,8 +31,15 @@ def create_app():
     db.init_app(app)
 
     app.register_blueprint(auth_route, url_prefix='/auth')
-    app.config['SECRET_KEY'] = 'your_strong_secret_key'
-    app.config["JWT_SECRET_KEY"] = 'your_jwt_secret_key'
+
+    app.register_blueprint(budget_route, url_prefix='/budget')
+
+    app.register_blueprint(transaction_route, url_prefix='/transaction')
+
+    app.register_blueprint(categorie_route, url_prefix='/categorie')
+
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+    app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')
     app.config['JWT_TOKEN_LOCATION'] = ['headers']
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=2)
 
@@ -41,7 +59,12 @@ def handle_error(e):
     code = 500
     if isinstance(e, HTTPException):
         code = e.code
-    return generate_response(status=code)
+    return generate_response(status=code, message=str(e))
+
+@app.errorhandler(IntegrityError)
+def handle_integrity_error(e):
+    return generate_response(status=str(e.orig), message="oups")
+
 
 @app.route('/')
 def hello_world():

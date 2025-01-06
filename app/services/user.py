@@ -24,8 +24,8 @@ class UserService:
         """
         try:
             user = User.get_user_by_mail(email=email)
-            if not user :
-                generate_response(message="Email not found", error="Bad Request", status=400)
+            if user is None :
+                return generate_response(message="Email not found", error="Bad Request", status=400)
             else : 
                 logged = user.authenticate(password_to_check=password)
                 if logged:
