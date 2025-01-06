@@ -64,3 +64,12 @@ CREATE TABLE "budget_objective" (
     FOREIGN KEY ("budget_id") REFERENCES "budget"("id"),
     FOREIGN KEY ("categorie_id") REFERENCES "categorie"("id")
 );
+
+
+INSERT INTO "categorie" ("type", "name", "created_at") VALUES
+('expense', 'Food', '2024-12-29'),
+('expense', 'Transport', '2024-12-29'),
+('expense', 'Entertainment', '2024-12-29'),
+('income', 'Salary', '2024-12-29'),
+('income', 'Investments', '2024-12-29')
+ON CONFLICT ("type", "name") DO NOTHING;
