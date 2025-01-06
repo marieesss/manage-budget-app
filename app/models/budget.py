@@ -14,6 +14,12 @@ class Budget(BaseTable):
     @classmethod    
     def get_budget_id(self, id : int):
         return self.query.filter_by(id=id).first() 
+          
+    def get_budgets(self, transaction_type=None):
+        if transaction_type:
+            return [transaction for transaction in self.transactions if transaction.type.name == transaction_type]
+        return self.transactions
+
 
 
         

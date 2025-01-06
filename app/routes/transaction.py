@@ -31,5 +31,35 @@ def create_transaction():
     except Exception as e:
         logger.error("An unexpected error occurred: %s", e)
         return generate_response(message="An error occurred", status=500, error=e)
+    
+
+
+@transaction_route.route('/<budget_id>', methods=['GET'])
+@user_required()
+def get_transactions(budget_id):
+    try:
+        claims = get_jwt()
+
+        res = TransactionService.get_budget_transactions(budget_id=budget_id, email=claims["sub"])
+
+        return res
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", e)
+        return generate_response(message="An error occurred", status=500, error=e)
+
+
+@transaction_route.route('/<budget_id>/<categorie>', methods=['GET'])
+@user_required()
+def get_transactions_by_categorie(budget_id, categorie):
+    try:
+        claims = get_jwt()
+
+        res = TransactionService.get_budget_transactions_by_categorie(budget_id=budget_id, email=claims["sub"], categorie=categorie)
+
+        return res
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", e)
+        return generate_response(message="An error occurred", status=500, error=e)
+
 
 
