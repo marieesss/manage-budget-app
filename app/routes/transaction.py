@@ -60,6 +60,22 @@ def get_transactions_by_categorie(budget_id, categorie):
     except Exception as e:
         logger.error("An unexpected error occurred: %s", e)
         return generate_response(message="An error occurred", status=500, error=e)
+    
+
+
+@transaction_route.route('/<int:budget_id>/<int:date>/', methods=['GET'])
+@transaction_route.route('/<int:budget_id>/<int:date>/<type>', methods=['GET'])
+@user_required()
+def get_transactions_by_month(budget_id : int, date: int,type :str = None):
+    try:
+        claims = get_jwt()
+
+        res = TransactionService.get_budget_transactions_by_month(budget_id=budget_id, email=claims["sub"], date=date, type=type)
+
+        return res
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", e)
+        return generate_response(message="An error occurred", status=500, error=e)
 
 
 
