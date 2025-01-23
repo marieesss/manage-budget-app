@@ -15,7 +15,7 @@ CREATE TABLE "transaction"(
     "budget_id" BIGINT NOT NULL,
     "categorie_id" BIGINT,
     "amount" DECIMAL(10, 2) NOT NULL,
-    "transaction_date" DATE NOT NULL,
+    "transaction_date" timestamp  NOT NULL,
     "comment" VARCHAR(255),
     "type" VARCHAR(255) CHECK
         ("type" IN('expense', 'income')) NOT NULL,
@@ -57,7 +57,10 @@ CREATE TABLE "budget_objective" (
     "id" SERIAL NOT NULL,
     "budget_id" BIGINT NOT NULL,
     "categorie_id" BIGINT NOT NULL,
+    "name" VARCHAR(255) NOT NULL, 
     "amount" DECIMAL(5, 2) NOT NULL,
+    "type" VARCHAR(255) CHECK
+        ("type" IN('expense', 'income')) NOT NULL,
     "created_at" DATE NOT NULL,
     "updated_at" DATE,
     PRIMARY KEY ("id"),
