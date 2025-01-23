@@ -6,7 +6,7 @@ from flask import Flask
 from app.db import db
 import os
 from app.utils.request import generate_response
-from app.routes import auth_route, budget_route, transaction_route, categorie_route
+from app.routes import auth_route, budget_route, transaction_route, categorie_route, objective_route
 from marshmallow import ValidationError
 from flask_jwt_extended import JWTManager
 from flask import Flask
@@ -37,6 +37,8 @@ def create_app():
     app.register_blueprint(transaction_route, url_prefix='/transaction')
 
     app.register_blueprint(categorie_route, url_prefix='/categorie')
+
+    app.register_blueprint(objective_route, url_prefix='/objective')
 
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY')

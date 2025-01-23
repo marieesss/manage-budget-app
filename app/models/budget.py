@@ -9,6 +9,8 @@ class Budget(BaseTable):
     user_id = db.Column(db.String(128), db.ForeignKey('user.id'), nullable=False)
     name = db.Column(db.String(128), nullable=False)
     transactions = db.relationship("Transaction", backref="budget")
+    objectives = db.relationship("Objective", backref="objective_budget")
+
 
 
     @classmethod    
@@ -19,6 +21,12 @@ class Budget(BaseTable):
         if transaction_type:
             return [transaction for transaction in self.transactions if transaction.type.name == transaction_type]
         return self.transactions
+    
+    def get_budget_objectives (self, objective_type = None):
+        if objective_type:
+            return [objective for objective in self.objectives if objective.type.name == objective_type]
+        return self.objectives
+        
 
 
 
