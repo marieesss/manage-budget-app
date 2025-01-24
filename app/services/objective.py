@@ -31,8 +31,7 @@ class ObjectiveService:
                 type= type
             )
             try: 
-                db.session.add(objective)
-                db.session.commit()
+                objective.save()
                 return generate_response(message="Objective created", status=200)   
             except IntegrityError:
                 db.session.rollback()
@@ -45,14 +44,14 @@ class ObjectiveService:
 
 
     def get_budget_objectives(budget_id: int, email : str, type : str = None):
-        """ Create a transaction
+        """ get budget Objectives
 
         Parameters
         -----------------
 
         Returns
         ----------
-        Confirmation message 
+        Array of objectives
         """
         try:
             budget = Budget.get_budget_id(id=budget_id)
@@ -61,7 +60,7 @@ class ObjectiveService:
             elif not budget.user.email == email:
                 return generate_response(message="This is not your budget", status=401, error="Conflict")
             
-            budget_objectives = budget.get_budget_objectives(objective_type=type)
+            budget_objectives = Objective.get_all_budget_objective(id=budget_id)
 
             objectives_data = [
             {
@@ -79,4 +78,51 @@ class ObjectiveService:
         except Exception as error:
             logger.error("An unexpected error occurred: %s", error)
             db.session.rollback()
-            return generate_response(message="An unexpected error occurred", status=500, error=str(error))   
+            return generate_response(message="An unexpected error occurred", status=500, error=str(error))
+        
+    def update_objective(name: str, budget_id: int, amount : float, categorie_id: int, email : str, objective_id: int,  type : str = "expense"):
+        """ Update budget objectives
+
+        Parameters
+        -----------------
+
+        Returns
+        ----------
+        Confirmation message 
+        """
+
+        try:
+            budget = Budget.get_budget_id(id=budget_id)
+            if not budget: 
+                return generate_response(message="Budget not found", status=400, error="Conflict")
+            elif not budget.user.email == email:
+                return generate_response(message="This is not your budget objectives", status=401, error="Conflict")
+            
+            objective_to_update= Objective.get_by_objective_id(id=objective_id)
+
+
+            if not objective_to_update :
+                return generate_response(message="Objective not found", status=400, error="Conflict")
+            
+            objective_to_update.budget_id = budget_id
+            objective_to_update.name = name
+            objective_to_update.categorie_id = categorie_id
+            objective_to_update.amount = amount
+            objective_to_update.type = type
+
+
+            objective_to_update.update()
+
+
+            return generate_response(data="Updated value", message="Objectives retrieved successfully", status=200)
+
+        except Exception as error:
+            logger.error("An unexpected error occurred: %s", error)
+            db.session.rollback()
+            return generate_response(message="An unexpected error occurred", status=500, error=str(error))
+
+
+
+
+
+
