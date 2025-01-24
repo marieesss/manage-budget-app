@@ -60,7 +60,7 @@ class ObjectiveService:
             elif not budget.user.email == email:
                 return generate_response(message="This is not your budget", status=401, error="Conflict")
             
-            budget_objectives = Objective.get_all_budget_objective(id=budget_id)
+            budget_objectives = Objective.get_all_budget_objective(id=budget_id , type = type)
 
             objectives_data = [
             {

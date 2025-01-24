@@ -2,6 +2,7 @@ from app.db import db
 from .base import BaseTable, TypeEnum
 
 
+
 class Objective(BaseTable):
     __tablename__ = "budget_objective"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -18,8 +19,12 @@ class Objective(BaseTable):
         return cls.query.filter_by(id=id).first()
 
     @classmethod
-    def get_all_budget_objective(cls, id):
-        return cls.query.filter_by(budget_id=id).all()
+    def get_all_budget_objective(cls, id, type):
+        objectives =  cls.query.filter_by(budget_id=id).all()
+        if type :
+            objectives=  [objective for objective in objectives  if objective.type.name == type]
+        return objectives
+            
     
     def save(self):
         db.session.add(self)
