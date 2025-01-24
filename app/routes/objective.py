@@ -26,7 +26,9 @@ def create_objective():
         logger.info(json_data)
 
 
-        validate_json_schema(json_data=json_data, schema=objective_schema)
+        validation_error = validate_json_schema(json_data=json_data, schema=objective_schema)
+        if validation_error:
+            return validation_error 
 
         res = ObjectiveService.create_objective(budget_id =json_data["budget_id"],
                                                 amount = json_data["amount"], 
@@ -54,5 +56,3 @@ def get_transactions(budget_id : int, type : str = None):
     except Exception as e:
         logger.error("An unexpected error occurred: %s", e)
         return generate_response(message="An error occurred", status=500, error=e)
-
-

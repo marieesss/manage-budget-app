@@ -22,7 +22,9 @@ def create_transaction():
         if error:
             return generate_response(error, error="Bad request", status=400)
 
-        validate_json_schema(json_data=json_data, schema=transaction_schema)
+        validation_error = validate_json_schema(json_data=json_data, schema=transaction_schema)
+        if validation_error:
+            return validation_error 
 
         res = TransactionService.create_transaction(budget_id =json_data["budget_id"], amount = json_data["amount"], categorie_id = json_data.get("categorie_id"), transaction_date=json_data.get("transaction_date"), type= json_data.get("type"), comment=json_data.get("comment"))
 
