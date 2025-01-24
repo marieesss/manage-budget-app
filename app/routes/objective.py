@@ -46,7 +46,7 @@ def create_objective():
 @objective_route.route('/<budget_id>', methods=['GET'])
 @objective_route.route('/<budget_id>/<type>', methods=['GET'])
 @user_required()
-def get_transactions(budget_id : int, type : str = None):
+def get_objectives(budget_id : int, type : str = None):
     try:
         claims = get_jwt()
 
@@ -82,6 +82,21 @@ def update_objectives():
                                                 email=claims["sub"])
         return res
 
+    except Exception as e:
+        logger.error("An unexpected error occurred: %s", e)
+        return generate_response(message="An error occurred", status=500, error=e)
+    
+
+
+@objective_route.route('/<objective_id>', methods=['DELETE'])
+@user_required()
+def delete_objective(objective_id : int, type : str = None):
+    try:
+        claims = get_jwt()
+
+        res = ObjectiveService.delete_objective(objective_id=objective_id, email=claims["sub"])
+
+        return res
     except Exception as e:
         logger.error("An unexpected error occurred: %s", e)
         return generate_response(message="An error occurred", status=500, error=e)

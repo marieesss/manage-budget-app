@@ -120,6 +120,35 @@ class ObjectiveService:
             logger.error("An unexpected error occurred: %s", error)
             db.session.rollback()
             return generate_response(message="An unexpected error occurred", status=500, error=str(error))
+        
+
+    def delete_objective(email : str, objective_id : str):
+        """ Update budget objectives
+
+        Parameters
+        -----------------
+
+        Returns
+        ----------
+        Confirmation message 
+        """
+
+        try:
+            objective = Objective.get_by_objective_id(id=objective_id)
+            
+            if not objective: 
+                return generate_response(message="Budget not found", status=400, error="Conflict")
+            elif not objective.objective_budget.user.email == email:
+                return generate_response(message="This is not your budget objectives", status=401, error="Conflict")
+            
+            objective.delete()
+
+            return generate_response(data="Objective deleted", message="Objectives retrieved successfully", status=200)
+
+        except Exception as error:
+            logger.error("An unexpected error occurred: %s", error)
+            db.session.rollback()
+            return generate_response(message="An unexpected error occurred", status=500, error=str(error))
 
 
 
