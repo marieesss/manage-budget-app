@@ -1,8 +1,6 @@
 from app.db import db
 from .base import BaseTable, TypeEnum
-from datetime import datetime
-from datetime import datetime
-from sqlalchemy import extract
+
 
 
 class Objective(BaseTable):
@@ -14,4 +12,27 @@ class Objective(BaseTable):
     name = db.Column(db.String(128), nullable=False)
     type = db.Column(db.Enum(TypeEnum), default=TypeEnum.expense,  nullable=False)
     categorie = db.relationship("Categorie", backref="objectives")
+
+
+    @classmethod
+    def get_by_objective_id(cls, id):
+        return cls.query.filter_by(id=id).first()
+
+    @classmethod
+    def get_all_budget_objective(cls, id, type):
+        objectives =  cls.query.filter_by(budget_id=id).all()
+        if type :
+            objectives=  [objective for objective in objectives  if objective.type.name == type]
+        return objectives
+            
     
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()

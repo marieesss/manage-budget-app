@@ -20,7 +20,12 @@ def generate_response(message=None, data=None, error=None, status=200):
 def validate_json_schema(schema, json_data):
     """Validate request schema"""
     try:
-        return schema().load(json_data)
+        schema().load(json_data)
+        return None
     except ValidationError as err:
-        return ValidationError(err.messages)
+        return generate_response(
+            message="Invalid request data",
+            status=400,
+            error=err.messages
+        ) 
 

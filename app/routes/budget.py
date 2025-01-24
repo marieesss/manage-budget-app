@@ -22,7 +22,9 @@ def create_budget():
         if error:
             return generate_response(error, error="Bad request", status=400)
 
-        validate_json_schema(json_data=json_data, schema=create_budget_payload)
+        validation_error =validate_json_schema(json_data=json_data, schema=create_budget_payload)
+        if validation_error:
+            return validation_error 
 
         res = BudgetService.create_budget(email=claims["sub"], name=json_data["name"])
 

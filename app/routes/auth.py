@@ -13,7 +13,9 @@ def register():
         if error:
             return generate_response(error, error="Bad request", status=400)
 
-        validate_json_schema(json_data=json_data, schema=auth_schema)
+        validation_error = validate_json_schema(json_data=json_data, schema=auth_schema)
+        if validation_error:
+            return validation_error 
 
         res = UserService.register(json_data)
 
@@ -28,9 +30,11 @@ def login():
     json_data, error = get_json_data()
     if error:
         return generate_response(message="Bad request", error=error, status=400)
-    data = validate_json_schema(json_data=json_data, schema=login_schema)
+    validation_error = validate_json_schema(json_data=json_data, schema=login_schema)
+    if validation_error:
+            return validation_error 
     try:
-        res = UserService.login(email=data["email"], password=data["password"])
+        res = UserService.login(email=json_data["email"], password=json_data["password"])
         return res
     except Exception as e:
         return generate_response(message="An error occurred during login", status=500, error=str(e))

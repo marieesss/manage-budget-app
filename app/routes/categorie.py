@@ -17,7 +17,9 @@ def create_categorie():
         if error:
             return generate_response(error, error="Bad request", status=400)
 
-        validate_json_schema(json_data=json_data, schema=categorie_schema)
+        validation_error = validate_json_schema(json_data=json_data, schema=categorie_schema)
+        if validation_error:
+            return validation_error 
 
         res = CategorieService.create_categorie(name=json_data["name"], type=json_data["type"])
 
